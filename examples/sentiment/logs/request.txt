@@ -1,0 +1,56 @@
+METHOD: POST
+URL     https://api.openai.com/v1/chat/completions
+HEADERS
+    accept:           application/json, text/plain, */*
+    accept-encoding:  gzip, compress, deflate, br
+    authorization:    Bearer sk-***
+    connection:       close
+    content-length:   684
+    content-type:     application/json
+    host:             api.openai.com
+    openai-organization:
+    user-agent:       axios/1.4.0
+
+STATUS: 200 OK
+HEADERS
+    access-control-allow-origin: *
+    alt-svc:          h3=":443"; ma=86400
+    cache-control:    no-cache, must-revalidate
+    cf-cache-status:  DYNAMIC
+    cf-ray:           7f1d52b25bba2d56-PER
+    connection:       close
+    content-encoding: br
+    content-type:     application/json
+    date:             Sat, 05 Aug 2023 07:28:24 GMT
+    openai-model:     gpt-3.5-turbo-0613
+    openai-organization: servicestack-inc
+    openai-processing-ms: 686
+    openai-version:   2020-10-01
+    server:           cloudflare
+    strict-transport-security: max-age=15724800; includeSubDomains
+    transfer-encoding: chunked
+    x-ratelimit-limit-requests: 3500
+    x-ratelimit-limit-tokens: 90000
+    x-ratelimit-remaining-requests: 3499
+    x-ratelimit-remaining-tokens: 89842
+    x-ratelimit-reset-requests: 17ms
+    x-ratelimit-reset-tokens: 105ms
+    x-request-id: 08b3babd1c17f506581a110d6e277397
+
+You are a service that translates user requests into JSON objects of type "SentimentResponse" according to the following TypeScript definitions:
+```
+// The following is a schema definition for determining the sentiment of a some user input.
+
+export interface SentimentResponse {
+    sentiment: "negative" | "neutral" | "positive";  // The sentiment of the text
+}
+```
+The following is a user request:
+"""
+hello, world
+"""
+The following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:
+
+{
+  "sentiment": "neutral"
+}

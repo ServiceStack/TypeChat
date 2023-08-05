@@ -1,0 +1,56 @@
+[
+    {
+        "model": "gpt-3.5-turbo",
+        "messages": [
+            {
+                "role": "user",
+                "content": "You are a service that translates user requests into JSON objects of type \"Order\" according to the following TypeScript definitions:\n```\n// an order from a restaurant that serves pizza, beer, and salad\r\nexport type Order = {\r\n    items: (OrderItem | UnknownText)[];\r\n};\r\n\r\nexport type OrderItem = Pizza | Beer | Salad | NamedPizza;\r\n\r\n// Use this type for order items that match nothing else\r\nexport interface UnknownText {\r\n    itemType: 'unknown',\r\n    text: string; // The text that wasn't understood\r\n}\r\n\r\n\r\nexport type Pizza = {\r\n    itemType: 'pizza';\r\n    // default: large\r\n    size?: 'small' | 'medium' | 'large' | 'extra large';\r\n    // toppings requested (examples: pepperoni, arugula)\r\n    addedToppings?: string[];\r\n    // toppings requested to be removed (examples: fresh garlic, anchovies)\r\n    removedToppings?: string[];\r\n    // default: 1\r\n    quantity?: number;\r\n    // used if the requester references a pizza by name\r\n    name?: \"Hawaiian\" | \"Yeti\" | \"Pig In a Forest\" | \"Cherry Bomb\";\r\n};\r\n\r\nexport interface NamedPizza extends Pizza {\r\n}\r\n\r\nexport type Beer = {\r\n    itemType: 'beer';\r\n    // examples: Mack and Jacks, Sierra Nevada Pale Ale, Miller Lite\r\n    kind: string;\r\n    // default: 1\r\n    quantity?: number;\r\n};\r\n\r\nexport const saladSize = ['half', 'whole'];\r\n\r\nexport const saladStyle = ['Garden', 'Greek'];\r\n\r\nexport type Salad = {\r\n    itemType: 'salad';\r\n    // default: half\r\n    portion?: string;\r\n    // default: Garden\r\n    style?: string;\r\n    // ingredients requested (examples: parmesan, croutons)\r\n    addedIngredients?: string[];\r\n    // ingredients requested to be removed (example: red onions)\r\n    removedIngredients?: string[];\r\n    // default: 1\r\n    quantity?: number;\r\n};\r\n\r\n```\nThe following is a user request:\n\"\"\"\ngive me three regular salads and two Greeks and make the regular ones with no red onions\n\"\"\"\nThe following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:\n"
+            }
+        ],
+        "temperature": 0,
+        "n": 1
+    },
+    {
+        "id": "chatcmpl-7k5l0h76T36RU6VUkrKsP5rVTJK1a",
+        "object": "chat.completion",
+        "created": 1691219574,
+        "model": "gpt-3.5-turbo-0613",
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "{\n  \"items\": [\n    {\n      \"itemType\": \"salad\",\n      \"portion\": \"whole\",\n      \"style\": \"Garden\",\n      \"quantity\": 3\n    },\n    {\n      \"itemType\": \"salad\",\n      \"portion\": \"whole\",\n      \"style\": \"Greek\",\n      \"quantity\": 2,\n      \"removedIngredients\": [\"red onions\"]\n    }\n  ]\n}"
+                },
+                "finish_reason": "stop"
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 467,
+            "completion_tokens": 87,
+            "total_tokens": 554
+        }
+    },
+    {
+        "request": "give me three regular salads and two Greeks and make the regular ones with no red onions",
+        "response": {
+            "items": [
+                {
+                    "itemType": "salad",
+                    "portion": "whole",
+                    "style": "Garden",
+                    "quantity": 3
+                },
+                {
+                    "itemType": "salad",
+                    "portion": "whole",
+                    "style": "Greek",
+                    "quantity": 2,
+                    "removedIngredients": [
+                        "red onions"
+                    ]
+                }
+            ]
+        }
+    }
+]

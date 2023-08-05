@@ -1,0 +1,172 @@
+METHOD: POST
+URL     https://api.openai.com/v1/chat/completions
+HEADERS
+    accept:           application/json, text/plain, */*
+    accept-encoding:  gzip, compress, deflate, br
+    authorization:    Bearer sk-***
+    connection:       close
+    content-length:   4642
+    content-type:     application/json
+    host:             api.openai.com
+    openai-organization:
+    user-agent:       axios/1.4.0
+
+STATUS: 200 OK
+HEADERS
+    access-control-allow-origin: *
+    alt-svc:          h3=":443"; ma=86400
+    cache-control:    no-cache, must-revalidate
+    cf-cache-status:  DYNAMIC
+    cf-ray:           7f1d692498f32d50-PER
+    connection:       close
+    content-encoding: br
+    content-type:     application/json
+    date:             Sat, 05 Aug 2023 07:43:45 GMT
+    openai-model:     gpt-3.5-turbo-0613
+    openai-organization: servicestack-inc
+    openai-processing-ms: 2107
+    openai-version:   2020-10-01
+    server:           cloudflare
+    strict-transport-security: max-age=15724800; includeSubDomains
+    transfer-encoding: chunked
+    x-ratelimit-limit-requests: 3500
+    x-ratelimit-limit-tokens: 90000
+    x-ratelimit-remaining-requests: 3499
+    x-ratelimit-remaining-tokens: 88900
+    x-ratelimit-reset-requests: 17ms
+    x-ratelimit-reset-tokens: 732ms
+    x-request-id:     ba40142177f56a69f967ef48383f87b9
+
+You are a service that translates user requests into programs represented as JSON using the following TypeScript definitions:
+```
+// A program consists of a sequence of function calls that are evaluated in order.
+export type Program = {
+    "@steps": FunctionCall[];
+}
+
+// A function call specifies a function name and a list of argument expressions. Arguments may contain
+// nested function calls and result references.
+export type FunctionCall = {
+    // Name of the function
+    "@func": string;
+    // Arguments for the function, if any
+    "@args"?: Expression[];
+};
+
+// An expression is a JSON value, a function call, or a reference to the result of a preceding expression.
+export type Expression = JsonValue | FunctionCall | ResultReference;
+
+// A JSON value is a string, a number, a boolean, null, an object, or an array. Function calls and result
+// references can be nested in objects and arrays.
+export type JsonValue = string | number | boolean | null | { [x: string]: Expression } | Expression[];
+
+// A result reference represents the value of an expression from a preceding step.
+export type ResultReference = {
+    // Index of the previous expression in the "@steps" array
+    "@ref": number;
+};
+```
+The programs can call functions from the API defined in the following TypeScript definitions:
+```
+// This is a schema for writing programs that control a Spotify music player
+
+type Track = { name: string };
+type TrackList = Track[];
+type Playlist = TrackList; 
+
+export type API = {
+    // play track list
+    play(
+        // track list to play
+        trackList: TrackList,
+        // start playing at this track index
+        startIndex?: number,
+        // play this many tracks
+        count?: number
+    ): void;
+    // print a list of tracks
+    printTracks(trackList: TrackList): void;
+    // see what is up next
+    getQueue(): void;
+    // show now playing
+    status(): void;
+    // control playback
+    // pause playback
+    pause(): void;
+    // next track
+    next(): void;
+    // previous track
+    previous(): void;
+    // turn shuffle on
+    shuffleOn(): void;
+    // turn shuffle off
+    shuffleOff(): void;
+    // resume playing
+    resume(): void;
+    // list available playback devices
+    listDevices(): void;
+    // select playback device by keyword
+    selectDevice(keyword: string): void;
+    // set volume
+    setVolume(newVolumeLevel: number): void;
+    // change volume
+    changeVolume(volumeChangeAmount: number): void;
+    // query is a Spotify search expression such as 'Rock Lobster' or 'te kanawa queen of night'
+    searchTracks(query: string): TrackList;
+    // return the last track list shown to the user
+    // for example, if the user types "play the third one" the player plays the third track
+    // from the last track list shown
+    getLastTrackList(): TrackList;
+    // list all playlists
+    listPlaylists(): void;
+    // get playlist by name
+    getPlaylist(name: string): Playlist;
+    // get album by name; if name is "", use the currently playing track
+    getAlbum(name: string): TrackList;
+    // Return a list of the user's favorite tracks
+    getFavorites(count?: number): TrackList;
+    // apply a filter to match tracks
+    filterTracks(
+        // track list to filter
+        trackList: TrackList,
+        // filter type is one of "genre", "artist", "name"; name does a fuzzy match on the track name
+        // for example, filterType: "name", filter: "color" matches "Red Red Wine"
+        filterType: "genre" | "artist" | "name",
+        filter: string,
+        negate?: boolean
+    ): TrackList;
+    // create a Spotify playlist from a list of tracks
+    createPlaylist(trackList: TrackList, name: string): void;
+    // Delete playlist given by playlist
+    deletePlaylist(playlist: Playlist): void;
+    // call this function for requests that weren't understood
+    unknownAction(text: string): void;
+    // call this function if the user asks a non-music question; non-music non-questions use UnknownAction
+    nonMusicQuestion(text: string): void;
+};
+```
+The following is a user request:
+"""
+play Taylor Swift Shake It Off
+"""
+The following is the user request translated into a JSON program object with 2 spaces of indentation and no properties with the value undefined:
+
+
+{
+  "@steps": [
+    {
+      "@func": "searchTracks",
+      "@args": [
+        "Taylor Swift Shake It Off"
+      ]
+    },
+    {
+      "@func": "play",
+      "@args": [
+        {
+          "@ref": 0
+        }
+      ]
+    }
+  ]
+}

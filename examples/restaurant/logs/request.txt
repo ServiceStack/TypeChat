@@ -1,0 +1,147 @@
+METHOD: POST
+URL     https://api.openai.com/v1/chat/completions
+HEADERS
+    accept:             application/json, text/plain, */*
+    accept-encoding:    gzip, compress, deflate, br
+    authorization:      Bearer sk-***
+    connection:         close
+    content-length:     2475
+    content-type:       application/json
+    host:               api.openai.com
+    openai-organization:
+    user-agent:         axios/1.4.0
+
+STATUS: 200 OK
+HEADERS
+    access-control-allow-origin: *
+    alt-svc:            h3=":443"; ma=86400
+    cache-control:      no-cache, must-revalidate
+    cf-cache-status:    DYNAMIC
+    cf-ray:             7f1d3ac70f7b8acf-PER
+    connection:         close
+    content-encoding:   br
+    content-type:       application/json
+    date:               Sat, 05 Aug 2023 07:12:12 GMT
+    openai-model:       gpt-3.5-turbo-0613
+    openai-organization: servicestack-inc
+    openai-processing-ms: 8194
+    openai-version:     2020-10-01
+    server:             cloudflare
+    strict-transport-security: max-age=15724800; includeSubDomains
+    transfer-encoding:  chunked
+    x-ratelimit-limit-requests: 3500
+    x-ratelimit-limit-tokens:   90000
+    x-ratelimit-remaining-requests: 3499
+    x-ratelimit-remaining-tokens: 89421
+    x-ratelimit-reset-requests: 17ms
+    x-ratelimit-reset-tokens: 386ms
+    x-request-id:       17eedd232308dd032073c20b40be6aab
+
+You are a service that translates user requests into JSON objects of type "Order" according to the following TypeScript definitions:
+```
+// an order from a restaurant that serves pizza, beer, and salad
+export type Order = {
+    items: (OrderItem | UnknownText)[];
+};
+
+export type OrderItem = Pizza | Beer | Salad | NamedPizza;
+
+// Use this type for order items that match nothing else
+export interface UnknownText {
+    itemType: 'unknown',
+    text: string; // The text that wasn't understood
+}
+
+
+export type Pizza = {
+    itemType: 'pizza';
+    // default: large
+    size?: 'small' | 'medium' | 'large' | 'extra large';
+    // toppings requested (examples: pepperoni, arugula)
+    addedToppings?: string[];
+    // toppings requested to be removed (examples: fresh garlic, anchovies)
+    removedToppings?: string[];
+    // default: 1
+    quantity?: number;
+    // used if the requester references a pizza by name
+    name?: "Hawaiian" | "Yeti" | "Pig In a Forest" | "Cherry Bomb";
+};
+
+export interface NamedPizza extends Pizza {
+}
+
+export type Beer = {
+    itemType: 'beer';
+    // examples: Mack and Jacks, Sierra Nevada Pale Ale, Miller Lite
+    kind: string;
+    // default: 1
+    quantity?: number;
+};
+
+export const saladSize = ['half', 'whole'];
+
+export const saladStyle = ['Garden', 'Greek'];
+
+export type Salad = {
+    itemType: 'salad';
+    // default: half
+    portion?: string;
+    // default: Garden
+    style?: string;
+    // ingredients requested (examples: parmesan, croutons)
+    addedIngredients?: string[];
+    // ingredients requested to be removed (example: red onions)
+    removedIngredients?: string[];
+    // default: 1
+    quantity?: number;
+};
+
+```
+The following is a user request:
+"""
+I'd like two large, one with pepperoni and the other with extra sauce.  The pepperoni gets basil and the extra sauce gets Canadian bacon.  And add a whole salad. Make the Canadian bacon a medium. Make the salad a Greek with no red onions.  And give me two Mack and Jacks and a Sierra Nevada.  Oh, and add another salad with no red onions.
+"""
+The following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:
+
+
+{
+  "items": [
+    {
+      "itemType": "pizza",
+      "size": "large",
+      "addedToppings": ["pepperoni"],
+      "quantity": 2
+    },
+    {
+      "itemType": "pizza",
+      "size": "large",
+      "addedToppings": ["extra sauce"],
+      "removedToppings": ["Canadian bacon"],
+      "quantity": 1
+    },
+    {
+      "itemType": "salad",
+      "portion": "whole",
+      "style": "Greek",
+      "removedIngredients": ["red onions"],
+      "quantity": 1
+    },
+    {
+      "itemType": "beer",
+      "kind": "Mack and Jacks",
+      "quantity": 2
+    },
+    {
+      "itemType": "beer",
+      "kind": "Sierra Nevada",
+      "quantity": 1
+    },
+    {
+      "itemType": "salad",
+      "portion": "half",
+      "style": "Greek",
+      "removedIngredients": ["red onions"],
+      "quantity": 1
+    }
+  ]
+}

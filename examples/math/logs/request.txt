@@ -1,0 +1,106 @@
+METHOD: POST
+URL     https://api.openai.com/v1/chat/completions
+HEADERS
+    accept:             application/json, text/plain, */*
+    accept-encoding:    gzip, compress, deflate, br
+    authorization:      Bearer sk-***
+    connection:         close
+    content-length:     2218
+    content-type:       application/json
+    host:               api.openai.com
+    openai-organization:
+    user-agent:         axios/1.4.0
+
+STATUS: 200 OK
+HEADERS
+    access-control-allow-origin: *
+    alt-svc:            h3=":443"; ma=86400
+    cache-control:      no-cache, must-revalidate
+    cf-cache-status:    DYNAMIC
+    cf-ray:             7f1d5defc9152d51-PER
+    connection:         close
+    content-encoding:   br
+    content-type:       application/json
+    date:               Sat, 05 Aug 2023 07:36:05 GMT
+    openai-model:       gpt-3.5-turbo-0613
+    openai-organization: servicestack-inc
+    openai-processing-ms: 1302
+    openai-version:     2020-10-01
+    server:             cloudflare
+    strict-transport-security: max-age=15724800; includeSubDomains
+    transfer-encoding:  chunked
+    x-ratelimit-limit-requests: 3500
+    x-ratelimit-limit-tokens: 90000
+    x-ratelimit-remaining-requests: 3499
+    x-ratelimit-remaining-tokens: 89473
+    x-ratelimit-reset-requests: 17ms
+    x-ratelimit-reset-tokens: 351ms
+    x-request-id:       7cb9cb72c96f35df7fcbeb151fe6de17
+
+You are a service that translates user requests into programs represented as JSON using the following TypeScript definitions:
+```
+// A program consists of a sequence of function calls that are evaluated in order.
+export type Program = {
+    "@steps": FunctionCall[];
+}
+
+// A function call specifies a function name and a list of argument expressions. Arguments may contain
+// nested function calls and result references.
+export type FunctionCall = {
+    // Name of the function
+    "@func": string;
+    // Arguments for the function, if any
+    "@args"?: Expression[];
+};
+
+// An expression is a JSON value, a function call, or a reference to the result of a preceding expression.
+export type Expression = JsonValue | FunctionCall | ResultReference;
+
+// A JSON value is a string, a number, a boolean, null, an object, or an array. Function calls and result
+// references can be nested in objects and arrays.
+export type JsonValue = string | number | boolean | null | { [x: string]: Expression } | Expression[];
+
+// A result reference represents the value of an expression from a preceding step.
+export type ResultReference = {
+    // Index of the previous expression in the "@steps" array
+    "@ref": number;
+};
+```
+The programs can call functions from the API defined in the following TypeScript definitions:
+```
+// This is a schema for writing programs that evaluate expressions.
+
+export type API = {
+    // Add two numbers
+    add(x: number, y: number): number;
+    // Subtract two numbers
+    sub(x: number, y: number): number;
+    // Multiply two numbers
+    mul(x: number, y: number): number;
+    // Divide two numbers
+    div(x: number, y: number): number;
+    // Negate a number
+    neg(x: number): number;
+    // Identity function
+    id(x: number): number;
+    // Unknown request
+    unknown(text: string): number;
+}
+```
+The following is a user request:
+"""
+1 + 2
+"""
+The following is the user request translated into a JSON program object with 2 spaces of indentation and no properties with the value undefined:
+
+{
+  "@steps": [
+    {
+      "@func": "add",
+      "@args": [
+        1,
+        2
+      ]
+    }
+  ]
+}

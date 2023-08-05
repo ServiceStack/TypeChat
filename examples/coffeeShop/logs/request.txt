@@ -1,0 +1,159 @@
+METHOD: POST
+URL https://api.openai.com/v1/chat/completions
+HEADERS
+    accept: application/json, text/plain, */*
+    accept-encoding: gzip, compress, deflate, br
+    authorization: Bearer sk-***
+    connection: close
+    content-length: 4335
+    content-type: application/json
+    host: api.openai.com
+    openai-organization:
+    user-agent: axios/1.4.0
+
+
+STATUS: 200 OK
+HEADERS
+    access-control-allow-origin: *
+    alt-svc: h3=":443"; ma=86400
+    cache-control: no-cache, must-revalidate
+    cf-cache-status: DYNAMIC
+    cf-ray: 7f158b9e399b2d51-PER
+    connection: close
+    content-encoding: br
+    content-type: application/json
+    date: Fri, 04 Aug 2023 08:49:11 GMT
+    openai-model: gpt-3.5-turbo-0613
+    openai-organization: servicestack-inc
+    openai-processing-ms: 2259
+    openai-version: 2020-10-01
+    server: cloudflare
+    strict-transport-security: max-age=15724800; includeSubDomains
+    transfer-encoding: chunked
+    x-ratelimit-limit-requests: 3500
+    x-ratelimit-limit-tokens: 90000
+    x-ratelimit-remaining-requests: 3499
+    x-ratelimit-remaining-tokens: 88980
+    x-ratelimit-reset-requests: 17ms
+    x-ratelimit-reset-tokens: 680ms
+    x-request-id: 96e064a3d5ffaebf41c2586a6925c961
+
+BODY
+
+You are a service that translates user requests into JSON objects of type "Cart" according to the following TypeScript definitions:
+```
+// The following is a schema definition for ordering lattes.
+
+export interface Cart {
+    items: (LineItem | UnknownText)[];
+}
+
+// Use this type for order items that match nothing else
+export interface UnknownText {
+    type: 'unknown',
+    text: string; // The text that wasn't understood
+}
+
+export interface LineItem {
+    type: 'lineitem',
+    product: Product;
+    quantity: number;
+}
+
+export type Product = BakeryProducts | LatteDrinks | EspressoDrinks | CoffeeDrinks;
+
+export interface BakeryProducts {
+    type: 'BakeryProducts';
+    name: 'apple bran muffin' | 'blueberry muffin' | 'lemon poppyseed muffin' | 'bagel';
+    options: (BakeryOptions | BakeryPreparations)[];
+}
+
+export interface BakeryOptions {
+    type: 'BakeryOptions';
+    name: 'butter' | 'strawberry jam' | 'cream cheese';
+    optionQuantity?: OptionQuantity;
+}
+
+export interface BakeryPreparations {
+    type: 'BakeryPreparations';
+    name: 'warmed' | 'cut in half';
+}
+
+export interface LatteDrinks {
+    type: 'LatteDrinks';
+    name: 'cappuccino' | 'flat white' | 'latte' | 'latte macchiato' | 'mocha' | 'chai latte';
+    temperature?: CoffeeTemperature;
+    size?: CoffeeSize;  // The default is 'grande'
+    options?: (Milks | Sweeteners | Syrups | Toppings | Caffeines | LattePreparations)[];
+}
+
+export interface EspressoDrinks {
+    type: 'EspressoDrinks';
+    name: 'espresso' | 'lungo' | 'ristretto' | 'macchiato';
+    temperature?: CoffeeTemperature;
+    size?: EspressoSize;  // The default is 'doppio'
+    options?: (Creamers | Sweeteners | Syrups | Toppings | Caffeines | LattePreparations)[];
+}
+
+export interface CoffeeDrinks {
+    type: 'CoffeeDrinks';
+    name: 'americano' | 'coffee';
+    temperature?: CoffeeTemperature;
+    size?: CoffeeSize;  // The default is 'grande'
+    options?: (Creamers | Sweeteners | Syrups | Toppings | Caffeines | LattePreparations)[];
+}
+
+export interface Syrups {
+    type: 'Syrups';
+    name: 'almond syrup' | 'buttered rum syrup' | 'caramel syrup' | 'cinnamon syrup' | 'hazelnut syrup' |
+        'orange syrup' | 'peppermint syrup' | 'raspberry syrup' | 'toffee syrup' | 'vanilla syrup';
+    optionQuantity?: OptionQuantity;
+}
+
+export interface Caffeines {
+    type: 'Caffeines';
+    name: 'regular' | 'two thirds caf' | 'half caf' | 'one third caf' | 'decaf';
+}
+
+export interface Milks {
+    type: 'Milks';
+    name: 'whole milk' | 'two percent milk' | 'nonfat milk' | 'coconut milk' | 'soy milk' | 'almond milk' | 'oat milk';
+}
+
+export interface Creamers {
+    type: 'Creamers';
+    name: 'whole milk creamer' | 'two percent milk creamer' | 'one percent milk creamer' | 'nonfat milk creamer' |
+        'coconut milk creamer' | 'soy milk creamer' | 'almond milk creamer' | 'oat milk creamer' | 'half and half' |
+        'heavy cream';
+}
+
+export interface Toppings {
+    type: 'Toppings';
+    name: 'cinnamon' | 'foam' | 'ice' | 'nutmeg' | 'whipped cream' | 'water';
+    optionQuantity?: OptionQuantity;
+}
+
+export interface LattePreparations {
+    type: 'LattePreparations';
+    name: 'for here cup' | 'lid' | 'with room' | 'to go' | 'dry' | 'wet';
+}
+
+export interface Sweeteners {
+    type: 'Sweeteners';
+    name: 'equal' | 'honey' | 'splenda' | 'sugar' | 'sugar in the raw' | 'sweet n low' | 'espresso shot';
+    optionQuantity?: OptionQuantity;
+}
+
+export type CoffeeTemperature = 'hot' | 'extra hot' | 'warm' | 'iced';
+
+export type CoffeeSize = 'short' | 'tall' | 'grande' | 'venti';
+
+export type EspressoSize = 'solo' | 'doppio' | 'triple' | 'quad';
+
+export type OptionQuantity = 'no' | 'light' | 'regular' | 'extra' | number;
+```
+The following is a user request:
+"""
+i'd like a latte that's it
+"""
+The following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:

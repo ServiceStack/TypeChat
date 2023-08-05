@@ -1,0 +1,55 @@
+[
+    {
+        "model": "gpt-3.5-turbo",
+        "messages": [
+            {
+                "role": "user",
+                "content": "You are a service that translates user requests into programs represented as JSON using the following TypeScript definitions:\n```\n// A program consists of a sequence of function calls that are evaluated in order.\nexport type Program = {\n    \"@steps\": FunctionCall[];\n}\n\n// A function call specifies a function name and a list of argument expressions. Arguments may contain\n// nested function calls and result references.\nexport type FunctionCall = {\n    // Name of the function\n    \"@func\": string;\n    // Arguments for the function, if any\n    \"@args\"?: Expression[];\n};\n\n// An expression is a JSON value, a function call, or a reference to the result of a preceding expression.\nexport type Expression = JsonValue | FunctionCall | ResultReference;\n\n// A JSON value is a string, a number, a boolean, null, an object, or an array. Function calls and result\n// references can be nested in objects and arrays.\nexport type JsonValue = string | number | boolean | null | { [x: string]: Expression } | Expression[];\n\n// A result reference represents the value of an expression from a preceding step.\nexport type ResultReference = {\n    // Index of the previous expression in the \"@steps\" array\n    \"@ref\": number;\n};\n```\nThe programs can call functions from the API defined in the following TypeScript definitions:\n```\n// This is a schema for writing programs that control a Spotify music player\r\n\r\ntype Track = { name: string };\r\ntype TrackList = Track[];\r\ntype Playlist = TrackList; \r\n\r\nexport type API = {\r\n    // play track list\r\n    play(\r\n        // track list to play\r\n        trackList: TrackList,\r\n        // start playing at this track index\r\n        startIndex?: number,\r\n        // play this many tracks\r\n        count?: number\r\n    ): void;\r\n    // print a list of tracks\r\n    printTracks(trackList: TrackList): void;\r\n    // see what is up next\r\n    getQueue(): void;\r\n    // show now playing\r\n    status(): void;\r\n    // control playback\r\n    // pause playback\r\n    pause(): void;\r\n    // next track\r\n    next(): void;\r\n    // previous track\r\n    previous(): void;\r\n    // turn shuffle on\r\n    shuffleOn(): void;\r\n    // turn shuffle off\r\n    shuffleOff(): void;\r\n    // resume playing\r\n    resume(): void;\r\n    // list available playback devices\r\n    listDevices(): void;\r\n    // select playback device by keyword\r\n    selectDevice(keyword: string): void;\r\n    // set volume\r\n    setVolume(newVolumeLevel: number): void;\r\n    // change volume\r\n    changeVolume(volumeChangeAmount: number): void;\r\n    // query is a Spotify search expression such as 'Rock Lobster' or 'te kanawa queen of night'\r\n    searchTracks(query: string): TrackList;\r\n    // return the last track list shown to the user\r\n    // for example, if the user types \"play the third one\" the player plays the third track\r\n    // from the last track list shown\r\n    getLastTrackList(): TrackList;\r\n    // list all playlists\r\n    listPlaylists(): void;\r\n    // get playlist by name\r\n    getPlaylist(name: string): Playlist;\r\n    // get album by name; if name is \"\", use the currently playing track\r\n    getAlbum(name: string): TrackList;\r\n    // Return a list of the user's favorite tracks\r\n    getFavorites(count?: number): TrackList;\r\n    // apply a filter to match tracks\r\n    filterTracks(\r\n        // track list to filter\r\n        trackList: TrackList,\r\n        // filter type is one of \"genre\", \"artist\", \"name\"; name does a fuzzy match on the track name\r\n        // for example, filterType: \"name\", filter: \"color\" matches \"Red Red Wine\"\r\n        filterType: \"genre\" | \"artist\" | \"name\",\r\n        filter: string,\r\n        negate?: boolean\r\n    ): TrackList;\r\n    // create a Spotify playlist from a list of tracks\r\n    createPlaylist(trackList: TrackList, name: string): void;\r\n    // Delete playlist given by playlist\r\n    deletePlaylist(playlist: Playlist): void;\r\n    // call this function for requests that weren't understood\r\n    unknownAction(text: string): void;\r\n    // call this function if the user asks a non-music question; non-music non-questions use UnknownAction\r\n    nonMusicQuestion(text: string): void;\r\n};\r\n```\nThe following is a user request:\n\"\"\"\nplay the fourth one\n\"\"\"\nThe following is the user request translated into a JSON program object with 2 spaces of indentation and no properties with the value undefined:\n"
+            }
+        ],
+        "temperature": 0,
+        "n": 1
+    },
+    {
+        "id": "chatcmpl-7k6FDXbvJg92rwerJVmIp8IXnQDJf",
+        "object": "chat.completion",
+        "created": 1691221447,
+        "model": "gpt-3.5-turbo-0613",
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "{\n  \"@steps\": [\n    {\n      \"@func\": \"getLastTrackList\",\n      \"@args\": []\n    },\n    {\n      \"@func\": \"play\",\n      \"@args\": [\n        {\n          \"@ref\": 0\n        },\n        3,\n        1\n      ]\n    }\n  ]\n}"
+                },
+                "finish_reason": "stop"
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 961,
+            "completion_tokens": 64,
+            "total_tokens": 1025
+        }
+    },
+    {
+        "request": "play the fourth one",
+        "response": {
+            "@steps": [
+                {
+                    "@func": "getLastTrackList",
+                    "@args": []
+                },
+                {
+                    "@func": "play",
+                    "@args": [
+                        {
+                            "@ref": 0
+                        },
+                        3,
+                        1
+                    ]
+                }
+            ]
+        }
+    }
+]
